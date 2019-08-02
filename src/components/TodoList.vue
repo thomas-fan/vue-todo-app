@@ -3,6 +3,7 @@
     <input type="text" class="todo-input" placeholder="需要做的事情"
            v-model="newTodo" @keyup.enter="addTodo"
     >
+    <transition-group name="fade" enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutDown">
     <div v-for="(todo, index) in todosFiltered" :key="todo.id" class="todo-item">
       <div class="todo-item-left">
         <input type="checkbox" v-model="todo.completed">
@@ -11,7 +12,7 @@
              :class="{ completed : todo.completed }"
         > {{todo.title}}
         </div>
-        <input v-if="todo.editing"
+        <input v-else="todo.editing"
                @keyup.enter="doneEdit(todo)"
                @keyup.esc="cancelEdit(todo)"
                @blur="doneEdit(todo)"
@@ -22,6 +23,7 @@
         &times;
       </div>
     </div>
+    </transition-group>
 
     <div class="extra-container">
       <div>
@@ -45,11 +47,16 @@
         <button :class="{active: filter === 'completed'}" @click="filter = 'completed'">已完成</button>
       </div>
       <div>
+        <transition name="fade">
+
         <button v-if="showClearCompletedButton"
                 @click="clearCompleted"
         >清除已完成
         </button>
+        </transition>
+
       </div>
+
     </div>
   </div>
 </template>
@@ -145,13 +152,14 @@
                 this.todos.forEach((todo) => todo.completed = event.target.checked)
             },
             clearCompleted() {
-              this.todos = this.todos.filter(todo => !todo.completed)
+                this.todos = this.todos.filter(todo => !todo.completed)
             }
         }
     }
 </script>
 
 <style scoped lang="scss">
+  @import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css");
   .todo-input {
     width: 100%;
     padding: 10px 18px;
@@ -168,6 +176,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    animation-duration: .3s;
   }
 
   .remove-item {
@@ -235,6 +244,14 @@
 
   .active {
     background: lightgreen;
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .2s;
+  }
+
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
   }
 
 </style>
