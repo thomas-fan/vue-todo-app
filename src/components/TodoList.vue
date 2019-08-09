@@ -4,25 +4,16 @@
            v-model="newTodo" @keyup.enter="addTodo"
     >
     <transition-group name="fade" enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutDown">
-    <div v-for="(todo, index) in todosFiltered" :key="todo.id" class="todo-item">
-      <div class="todo-item-left">
-        <input type="checkbox" v-model="todo.completed">
-        <div v-if="!todo.editing" class="todo-item-label"
-             @dblclick="editTodo(todo)"
-             :class="{ completed : todo.completed }"
-        > {{todo.title}}
-        </div>
-        <input v-else="todo.editing"
-               @keyup.enter="doneEdit(todo)"
-               @keyup.esc="cancelEdit(todo)"
-               @blur="doneEdit(todo)"
-               class="todo-item-edit"
-               type="text" v-model="todo.title" v-focus>
-      </div>
-      <div class="remove-item" @click="removeTodo(index)">
-        &times;
-      </div>
-    </div>
+    <todo-item v-for="(todo, index) in todosFiltered"
+               :key="todo.id"
+               :todo="todo"
+               :index="index"
+               :checkAll="!anyRemaining"
+               @removedTodo="removeTodo"
+               @finishedEdit="finishedEdit"
+
+    >
+    </todo-item>
     </transition-group>
 
     <div class="extra-container">
@@ -62,8 +53,10 @@
 </template>
 
 <script>
+    import TodoItem from "./TodoItem"
     export default {
         name: "TodoList",
+        components: {TodoItem},
         data() {
             return {
                 newTodo: '',
@@ -87,13 +80,6 @@
 
 
                 ]
-            }
-        },
-        directives: {
-            focus: {
-                inserted: function (el) {
-                    el.focus()
-                }
             }
         },
         computed: {
@@ -153,12 +139,15 @@
             },
             clearCompleted() {
                 this.todos = this.todos.filter(todo => !todo.completed)
+            },
+            finishedEdit(data) {
+                this.todos.splice(data.index, 1, data.todo)
             }
         }
     }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   @import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css");
   .todo-input {
     width: 100%;
