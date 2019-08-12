@@ -2,10 +2,10 @@
   <div class="todo-item">
     <div class="todo-item-left">
       <input type="checkbox" v-model="completed"
-             @change = "doneEdit"
+             @change="doneEdit"
       >
       <div v-if="!editing" class="todo-item-label"
-           @click ="editTodo"
+           @click="editTodo"
            :class="{ completed : completed }"
       > {{title}}
       </div>
@@ -61,7 +61,7 @@
         },
         watch: {
             checkAll() {
-                this.completed = this.checkAll ? true: this.todo.completed
+                this.completed = this.checkAll ? true : this.todo.completed
             }
         },
         directives: {
@@ -87,13 +87,12 @@
                 }
                 this.editing = false
                 eventBus.$emit('finishedEdit', {
-                    index: this.index,
-                    todo: {
-                        id: this.id,
-                        title: this.title,
-                        completed: this.completed,
-                        editing: this.editing,
-                    }
+
+                    id: this.id,
+                    title: this.title,
+                    completed: this.completed,
+                    editing: this.editing,
+
 
                 })
             },
@@ -102,16 +101,15 @@
                 this.title = this.beforeEditCache
                 this.editing = false
             },
-            pluralize(){
+            pluralize() {
                 eventBus.$emit('pluralize')
                 eventBus.$emit('finishedEdit', {
-                    index: this.index,
-                    todo: {
-                        id: this.id,
-                        title: this.title,
-                        completed: this.completed,
-                        editing: this.editing,
-                    }
+
+                    id: this.id,
+                    title: this.title,
+                    completed: this.completed,
+                    editing: this.editing,
+
 
                 })
             },

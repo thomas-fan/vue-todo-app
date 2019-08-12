@@ -4,14 +4,14 @@
            v-model="newTodo" @keyup.enter="addTodo"
     >
     <transition-group name="fade" enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutDown">
-    <todo-item v-for="(todo, index) in todosFiltered"
-               :key="todo.id"
-               :todo="todo"
-               :index="index"
-               :checkAll="!anyRemaining"
+      <todo-item v-for="(todo, index) in todosFiltered"
+                 :key="todo.id"
+                 :todo="todo"
+                 :index="index"
+                 :checkAll="!anyRemaining"
 
-    >
-    </todo-item>
+      >
+      </todo-item>
     </transition-group>
 
     <div class="extra-container">
@@ -38,6 +38,7 @@
     import TodoCheckAll from "./TodoCheckAll"
     import TodoFilter from './TodoFilter'
     import TodoClearCompleted from "./TodoClearCompleted"
+
     export default {
         name: "TodoList",
         components: {TodoClearCompleted, TodoFilter, TodoCheckAll, TodoItemsRemaining, TodoItem},
@@ -139,7 +140,8 @@
                 this.todos = this.todos.filter(todo => !todo.completed)
             },
             finishedEdit(data) {
-                this.todos.splice(data.index, 1, data.todo)
+                const index = this.todos.findIndex(item => item.id === data.id)
+                this.todos.splice(index, 1, data)
             }
         }
     }
@@ -147,6 +149,7 @@
 
 <style lang="scss">
   @import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css");
+
   .todo-input {
     width: 100%;
     padding: 10px 18px;
